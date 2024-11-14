@@ -2,7 +2,7 @@ paths:
   raw_data: "/home/binit/image_classification/data/raw"
   split_data: "/home/binit/image_classification/data/split_data"
   checkpoint_dir: "/home/binit/image_classification/checkpoints"
-  log_dir: "/home/binit/classifier/logs"
+  log_dir: "/home/binit/image_classification/logs"
   model_save_dir: "/home/binit/image_classification/model1"
   train_dir: "/home/binit/image_classification/data/split_data/train"
   test_dir: "/home/binit/image_classification/data/split_data/test"
