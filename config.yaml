@@ -1,0 +1,37 @@
+paths:
+  raw_data: "/home/binit/image_classification/data/raw"
+  split_data: "/home/binit/image_classification/data/split_data"
+  checkpoint_dir: "/home/binit/image_classification/checkpoints"
+  log_dir: "/home/binit/classifier/logs"
+  model_save_dir: "/home/binit/image_classification/model1"
+  train_dir: "/home/binit/image_classification/data/split_data/train"
+  test_dir: "/home/binit/image_classification/data/split_data/test"
+  val_dir: "/home/binit/image_classification/data/split_data/validation"
+
+models:
+  model_name: "Organika/sdxl-detector"
+  image_extensions: [".png", ".jpg", ".jpeg"]
+
+splits:
+  train: 0.7
+  test: 0.15
+  validation: 0.15
+
+hyperparameters:
+  batch_size: 32               
+  num_epochs: 100                
+  learning_rate: 1e-4  
+  weight_decay: 1e-4    
+  dropout: 0.3
+  patience: 8                   
+  save_steps: 500
+  max_checkpoints: 3
+
+scheduler:
+  type: "ReduceLROnPlateau"               
+  factor: 0.5             
+  patience: 5
+
+logging:
+  tensorboard: True             
+  log_interval: 100             

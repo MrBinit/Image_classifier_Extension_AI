@@ -1,0 +1,15 @@
+fastapi
+torch
+transformers
+flask
+flask_cors
+uvicorn
+pillow
+python-multipart
+numpy
+opencv-python
+pyvips
+albumentations
+scikit-learn
+tensorboard
+accelerate>=0.26.0
