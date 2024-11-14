@@ -24,10 +24,9 @@ def vips_to_pillow(img_vips):
         if np_img.size * np_img.itemsize == expected_size:
             np_img = np_img.reshape(height, width, bands)
             if bands == 1:
-                np_img = np.repeat(np_img, 3, axis=2)  # Convert grayscale to RGB
+                np_img = np.repeat(np_img, 3, axis=2) 
             elif bands == 4:
-                np_img = np_img[:, :, :3]  # Discard alpha channel
-
+                np_img = np_img[:, :, :3]  
             if bytes_per_channel == 2:
                 np_img = (np_img / 256).astype(np.uint8)
 
@@ -39,13 +38,46 @@ def vips_to_pillow(img_vips):
         print(f"Error converting {img_vips.filename} with pyvips: {e}")
         return None
 
+
+def process_single_image(filepath):
+    # Check if the image format is in the list of formats to be converted
+    if not filepath.lower().endswith(('.webp', '.avif', '.png')):
+        print(f"No conversion needed for {filepath}.")
+        return filepath
+
+    try:
+        img = None
+        if filepath.lower().endswith('.avif'):
+            print(f"Processing {filepath} with pyvips.")
+            img_vips = pyvips.Image.new_from_file(filepath, access='sequential')
+            img = vips_to_pillow(img_vips)
+            if img is None:
+                print(f"Could not convert {filepath} with pyvips.")
+                return None
+        else:
+            img = Image.open(filepath)
+
+        if img.mode in ("RGBA", "P", "L"):
+            img = img.convert("RGB")
+
+        jpeg_filepath = os.path.splitext(filepath)[0] + ".jpeg"
+        img.save(jpeg_filepath, "JPEG", quality=95)
+        os.remove(filepath)
+        print(f"Converted and replaced: {os.path.basename(filepath)} -> {os.path.basename(jpeg_filepath)}")
+        return jpeg_filepath
+
+    except UnidentifiedImageError:
+        print(f"Unidentified image error for {filepath}. Skipping.")
+        return None
+    except Exception as e:
+        print(f"Failed to convert {filepath}: {e}")
+        return None
+    
 def process_directory(directory):
-    # Supported extensions
     supported_extensions = ('.webp', '.avif', '.heic', '.png')
     all_in_correct_format = True
     found_files = False
-
-    # Traverse each folder and subfolder
+    
     for dirpath, _, files in os.walk(directory):
         for filename in files:
             if filename.lower().endswith(supported_extensions):
